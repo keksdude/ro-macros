@@ -135,6 +135,33 @@ While Not $exit
 				$lastused1 = TimerInit();
 			EndIf
 		EndIf
+
+		If $b2Set Then
+			$now = TimerInit()
+			$timediff = TimerDiff($lastused2)
+			If $timediff > $i2cd Then
+				ControlSend($WinID2, "", "", $Key2)
+				$lastused2 = TimerInit();
+			EndIf
+		EndIf
+
+		If $b3Set Then
+			$now = TimerInit()
+			$timediff = TimerDiff($lastused3)
+			If $timediff > $i3cd Then
+				ControlSend($WinID3, "", "", $Key3)
+				$lastused3 = TimerInit();
+			EndIf
+		EndIf
+
+		If $b4Set Then
+			$now = TimerInit()
+			$timediff = TimerDiff($lastused4)
+			If $timediff > $i4cd Then
+				ControlSend($WinID4, "", "", $Key4)
+				$lastused4 = TimerInit();
+			EndIf
+		EndIf
    EndIf
 Wend
 
