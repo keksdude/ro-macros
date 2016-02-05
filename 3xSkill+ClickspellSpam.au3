@@ -43,6 +43,8 @@ Global $i2cd = 1500
 Global $i3cd = 1500
 Global $i4cd = 50
 
+Global $pausezwischenskillundclick = 30
+
 ;Variables to calc time differences
 Global $lastused1
 Global $lastused2
@@ -159,6 +161,8 @@ While Not $exit
 			$timediff = TimerDiff($lastused4)
 			If $timediff > $i4cd Then
 				ControlSend($WinID4, "", "", $Key4)
+				Sleep($pausezwischenskillundclick)
+				MouseClick("left",$mousePosition[0],$mousePosition[1])
 				$lastused4 = TimerInit();
 			EndIf
 		EndIf

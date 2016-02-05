@@ -11,16 +11,22 @@
 
 HotKeySet("{F1}", "Terminate")
 HotKeySet("{F4}", "Pause")
-HotKeySet("{F5}", "Init")
+HotKeySet("{F5}", "SetHP")
+HotKeySet("{F6}", "SetSP")
 
 
 
 Global $WindId = 0
 Global $mPos
+Global $mPos2
 Global $cHex
+Global $cHex2
+Global $bHPset = False
+Global $bSPset = False
+
 $exit = False
 $pause = True
-$bla = 1
+
 Global $pause = true
 Opt("PixelCoordMode", 0) ;1=absolute, 0=relative, 2=client
 Opt("MouseCoordMode", 0) ;1=absolute, 0=relative, 2=client
@@ -35,13 +41,21 @@ $rgn = CreateTextRgn($hwnd,$text,30,"Arial",500)
 SetWindowRgn($hwnd,$rgn)
 GUISetState()
 
-Func Init()
+Func SetHP()
          $WindId=WinGetHandle("")
          Global $mPos = MouseGetPos()
-         Sleep(1500)
+         Sleep(1000)
          $cHex = PixelGetColor ( $mPos[0], $mPos[1], $WindId )
+		 $bHPset = TRUE
 EndFunc
 
+Func SetSP()
+         $WindId=WinGetHandle("")
+         Global $mPos2 = MouseGetPos()
+         Sleep(1000)
+         $cHex2 = PixelGetColor ( $mPos2[0], $mPos2[1], $WindId )
+		 $bSPset = TRUE
+EndFunc
 
 
 Func Pause()
@@ -66,10 +80,14 @@ EndFunc
 While Not $exit
    if Not $pause Then
          If $WindId <> 0 Then
-         if $cHex <>  PixelGetColor ( $mPos[0], $mPos[1], $WindId ) Then
-            ControlSend($WindId, "", "", ",")
-         EndIf
-      EndIf
+			If $cHex <>  PixelGetColor ( $mPos[0], $mPos[1], $WindId ) And $bHPset Then
+				ControlSend($WindId, "", "", ",")
+			EndIf
+
+			If $cHex2 <>  PixelGetColor ( $mPos2[0], $mPos2[1], $WindId ) And $bSPset Then
+				ControlSend($WindId, "", "", "m")
+			EndIf
+		EndIf
    EndIf
 Wend
 
