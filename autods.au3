@@ -20,7 +20,7 @@ HotkeySet("{F3}", "SearchTarget")
 
 
 Global $WindId = 0
-Global $cHex = 0x5D3C46
+Global $cHex = 0x948CA5
 Global $ResX = 1680
 Global $ResY = 1050
 Global $mPos[20][2] = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
@@ -60,11 +60,11 @@ While Not $exit
 		While $i < ($ResX-80) And Not $cancel
 			$tempPos = PixelSearch($i,1,$ResX,$ResY,$cHex)
 			If Not @error Then
+				Sleep(2)
 				$mPos[$t][0] = $tempPos[0]
 				$mPos[$t][1] = $tempPos[1]
-				$i = $tempPos[0]+70
+				$i = $tempPos[0]+40
 				$t=$t+1
-				Sleep(2)
 			Else
 				$cancel = True
 			EndIf
@@ -78,8 +78,8 @@ While Not $exit
 					Sleep(300)
 					$i=$i+1
 		Wend
-		Sleep(200)
+		Sleep(100)
 		ControlSend($WindId, "", "", "5")
-		Sleep(150)
+		Sleep(300)
 	Wend
 Wend
