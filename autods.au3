@@ -80,7 +80,7 @@ While Not $exit
 					ControlSend($WindId, "", "", "2")
 					Sleep(50)
 					MouseClick("left", $mPos[$i][0], $mPos[$i][1],1,2)
-					Sleep(300)
+					Sleep(290+Random(0,20))
 					$i=$i+1
 		Wend
 		Sleep(100)
@@ -89,7 +89,7 @@ While Not $exit
 			$pause = True
 		Else
 			ControlSend($WindId, "", "", "5")
-			Sleep(300)
+			Sleep(290+Random(0,35))
 		EndIf
 
 	Wend
