@@ -23,6 +23,8 @@ Global $WindId = 0
 Global $cHex = 0x948CA5
 Global $ResX = 1680
 Global $ResY = 1050
+Global $wingPos = [0,0]
+Global $wingColor = 0
 Global $mPos[20][2] = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
 $exit = False
 $pause = True
@@ -32,6 +34,9 @@ Opt("MouseCoordMode", 0) ;1=absolute, 0=relative, 2=client
 
 Func Init()
 		 $WindId=WinGetHandle("")
+		 $wingPos = MouseGetPos()
+		 Sleep(1500)
+		 $wingColor = PixelGetColor($wingPos[0],$wingPos[1],$WindId)
 EndFunc
 
 Func SearchTarget()
@@ -79,7 +84,13 @@ While Not $exit
 					$i=$i+1
 		Wend
 		Sleep(100)
-		ControlSend($WindId, "", "", "5")
-		Sleep(300)
+		If PixelGetColor($wingPos[0],$wingPos[1],$WindId) <> $wingColor Then
+			ControlSend($WindId, "", "", "9")
+			$pause = True
+		Else
+			ControlSend($WindId, "", "", "5")
+			Sleep(300)
+		EndIf
+
 	Wend
 Wend
