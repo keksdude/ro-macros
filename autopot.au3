@@ -4,6 +4,7 @@
 ;~ Global Const $WS_EX_TOOLWINDOW            = 0x00000080
 ;~ Global Const $WS_EX_TOPMOST                = 0x00000008
 
+#include <MemoryCustom.au3>
 #include <Misc.au3>
 #include <MsgBoxConstants.au3>
 #include <AutoItConstants.au3>
@@ -11,18 +12,18 @@
 
 HotKeySet("{F1}", "Terminate")
 HotKeySet("{F4}", "Pause")
-HotKeySet("{F5}", "SetHP")
-HotKeySet("{F6}", "SetSP")
+HotKeySet("{F5}", "Init")
 
 
 
 Global $WindId = 0
+Global $ProcessID = 0
 Global $mPos
-Global $mPos2
 Global $cHex
-Global $cHex2
-Global $bHPset = False
-Global $bSPset = False
+Global $hp
+Global $currenthp
+Global $ProcessInformation
+Global $HPKey = "{F9}"
 
 $exit = False
 $pause = True
@@ -37,26 +38,16 @@ GUISetBkColor(0xFF0000) ; text color
 
 $text = "autopot "
 $text = $text & "off"
-$rgn = CreateTextRgn($hwnd,$text,30,"Arial",500)
+$rgn = CreateTextRgn($hwnd,$text,20,"Arial",500)
 SetWindowRgn($hwnd,$rgn)
 GUISetState()
 
-Func SetHP()
-         $WindId=WinGetHandle("")
-         Global $mPos = MouseGetPos()
-         Sleep(1000)
-         $cHex = PixelGetColor ( $mPos[0], $mPos[1], $WindId )
-		 $bHPset = TRUE
-EndFunc
 
-Func SetSP()
-         $WindId=WinGetHandle("")
-         Global $mPos2 = MouseGetPos()
-         Sleep(1000)
-         $cHex2 = PixelGetColor ( $mPos2[0], $mPos2[1], $WindId )
-		 $bSPset = TRUE
-EndFunc
 
+Func Init()
+	$ProcessID = WinGetProcess("")
+	$WindId = WinGetHandle("")
+EndFunc
 
 Func Pause()
    $pause = Not $pause
@@ -66,7 +57,7 @@ Func Pause()
    Else
 		$text = $text & "on"
 	EndIf
-   $rgn = CreateTextRgn($hwnd,$text,30,"Arial",500)
+   $rgn = CreateTextRgn($hwnd,$text,20,"Arial",500)
 	SetWindowRgn($hwnd,$rgn)
 	GUISetState()
 EndFunc
@@ -78,15 +69,18 @@ EndFunc
 
 
 While Not $exit
-   if Not $pause Then
-         If $WindId <> 0 Then
-			If $cHex <>  PixelGetColor ( $mPos[0], $mPos[1], $WindId ) And $bHPset Then
-				ControlSend($WindId, "", "", ",")
-			EndIf
 
-			If $cHex2 <>  PixelGetColor ( $mPos2[0], $mPos2[1], $WindId ) And $bSPset Then
-				ControlSend($WindId, "", "", "m")
+   if Not $pause Then
+		If $WindId <> 0 Then
+			$ProcessInformation = _MemoryOpen($ProcessID)
+			$hp = _MemoryRead(0xCA2118, $ProcessInformation)
+			$currenthp = _MemoryRead(0xCA2114, $ProcessInformation)
+			Local $procent = $currenthp / $hp
+			If ($procent) < 0.9 And $currenthp > 1 Then
+				ControlSend($WindId, "", "", $HPKey)
 			EndIf
+			_MemoryClose($ProcessInformation)
+			Sleep(50)
 		EndIf
    EndIf
 Wend

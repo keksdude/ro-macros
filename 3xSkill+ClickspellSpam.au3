@@ -28,7 +28,7 @@ HotKeySet("^{F8}", "DeSet4")
 ;Keys to press ; qe = use e only when q goesnt work (ex. use bragi than encore only); qq = to reduce input problems and moving wizzards^^
 Global $Key1 = "qe"
 Global $Key2 = "qe"
-Global $Key3 = "q"
+Global $Key3 = "qe"
 Global $Key4 = "qq"
 
 ;Bools if set or not
