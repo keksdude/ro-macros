@@ -45,8 +45,12 @@ GUISetState()
 
 
 Func Init()
+	If $ProcessInformation <> 0 Then
+		_MemoryClose($ProcessInformation)
+	EndIf
 	$ProcessID = WinGetProcess("")
 	$WindId = WinGetHandle("")
+	$ProcessInformation = _MemoryOpen($ProcessID)
 EndFunc
 
 Func Pause()
@@ -72,17 +76,20 @@ While Not $exit
 
    if Not $pause Then
 		If $WindId <> 0 Then
-			$ProcessInformation = _MemoryOpen($ProcessID)
+
 			$hp = _MemoryRead(0xCA2118, $ProcessInformation)
 			$currenthp = _MemoryRead(0xCA2114, $ProcessInformation)
 			Local $procent = $currenthp / $hp
 			If ($procent) < 0.9 And $currenthp > 1 Then
 				ControlSend($WindId, "", "", $HPKey)
 			EndIf
-			_MemoryClose($ProcessInformation)
+
 			Sleep(50)
 		EndIf
    EndIf
+   If $ProcessInformation <> 0 Then
+		_MemoryClose($ProcessInformation)
+	EndIf
 Wend
 
 Func SetWindowRgn($h_win, $rgn)
