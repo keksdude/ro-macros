@@ -14,12 +14,8 @@ HotKeySet("{F1}", "Terminate")
 HotKeySet("{F4}", "Pause")
 HotKeySet("{F5}", "Init")
 
-
-
 Global $WindId = 0
 Global $ProcessID = 0
-Global $mPos
-Global $cHex
 Global $hp
 Global $currenthp
 Global $ProcessInformation
@@ -41,8 +37,6 @@ $text = $text & "off"
 $rgn = CreateTextRgn($hwnd,$text,20,"Arial",500)
 SetWindowRgn($hwnd,$rgn)
 GUISetState()
-
-
 
 Func Init()
 	If $ProcessInformation <> 0 Then
@@ -73,24 +67,21 @@ EndFunc
 
 
 While Not $exit
-
    if Not $pause Then
 		If $WindId <> 0 Then
-
 			$hp = _MemoryRead(0xCA2118, $ProcessInformation)
 			$currenthp = _MemoryRead(0xCA2114, $ProcessInformation)
 			Local $procent = $currenthp / $hp
-			If ($procent) < 0.9 And $currenthp > 1 Then
+			If ($procent) < 0.99 And $currenthp > 1 Then
 				ControlSend($WindId, "", "", $HPKey)
 			EndIf
-
 			Sleep(50)
 		EndIf
    EndIf
-   If $ProcessInformation <> 0 Then
-		_MemoryClose($ProcessInformation)
-	EndIf
 Wend
+If $ProcessInformation <> 0 Then
+		_MemoryClose($ProcessInformation)
+EndIf
 
 Func SetWindowRgn($h_win, $rgn)
     DllCall("user32.dll", "long", "SetWindowRgn", "hwnd", $h_win, "long", $rgn, "int", 1)

@@ -18,8 +18,6 @@ HotKeySet("{F5}", "Init")
 
 Global $WindId = 0
 Global $ProcessID = 0
-Global $mPos
-Global $cHex
 Global $hp
 Global $currenthp
 Global $sp
@@ -48,8 +46,12 @@ GUISetState()
 
 
 Func Init()
+	If $ProcessInformation <> 0 Then
+		_MemoryClose($ProcessInformation)
+	EndIf
 	$ProcessID = WinGetProcess("")
 	$WindId = WinGetHandle("")
+	$ProcessInformation = _MemoryOpen($ProcessID)
 EndFunc
 
 Func Pause()
@@ -72,26 +74,27 @@ EndFunc
 
 
 While Not $exit
-
    if Not $pause Then
 		If $WindId <> 0 Then
-			$ProcessInformation = _MemoryOpen($ProcessID)
 			$hp = _MemoryRead(0xCA2118, $ProcessInformation)
 			$currenthp = _MemoryRead(0xCA2114, $ProcessInformation)
 			$sp = _MemoryRead(0xCA2120, $ProcessInformation)
 			$currentsp = _MemoryRead(0xCA211C, $ProcessInformation)
+
 			Local $procenthp = $currenthp / $hp
 			Local $procentsp = $currentsp / $sp
-			If ($procenthp) < 0.9 And $procenthp > 1 Then
+			If ($procenthp) < 0.99 And $currenthp > 1 Then
 				ControlSend($WindId, "", "", $HPKey)
-			ElseIf ($procentsp) < 0.9 And $procentsp > 1 Then
+			ElseIf ($procentsp) < 0.99 And $currentsp > 1 Then
 				ControlSend($WindId, "", "", $SPKey)
 			EndIf
-			_MemoryClose($ProcessInformation)
 			Sleep(50)
 		EndIf
    EndIf
 Wend
+If $ProcessInformation <> 0 Then
+		_MemoryClose($ProcessInformation)
+EndIf
 
 Func SetWindowRgn($h_win, $rgn)
     DllCall("user32.dll", "long", "SetWindowRgn", "hwnd", $h_win, "long", $rgn, "int", 1)

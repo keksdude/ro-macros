@@ -29,7 +29,8 @@ HotKeySet("^{F8}", "DeSet4")
 Global $Key1 = "qe"
 Global $Key2 = "qe"
 Global $Key3 = "qe"
-Global $Key4 = "qq"
+Global $Key4 = "q"
+Global $Key5 = "e"
 
 ;Bools if set or not
 Global $b1set = False
@@ -42,6 +43,8 @@ Global $i1cd = 4000
 Global $i2cd = 1500
 Global $i3cd = 1500
 Global $i4cd = 50
+
+Global $switchcast = false
 
 Global $pausezwischenskillundclick = 30
 
@@ -160,10 +163,10 @@ While Not $exit
 			$now = TimerInit()
 			$timediff = TimerDiff($lastused4)
 			If $timediff > $i4cd Then
-				ControlSend($WinID4, "", "", $Key4)
-				Sleep($pausezwischenskillundclick)
-				MouseClick("left",$mousePosition[0],$mousePosition[1])
-				$lastused4 = TimerInit();
+					ControlSend($WinID4, "", "", $Key4)
+					Sleep($pausezwischenskillundclick)
+					MouseClick("left",$mousePosition[0],$mousePosition[1])
+					$lastused4 = TimerInit();
 			EndIf
 		EndIf
    EndIf
