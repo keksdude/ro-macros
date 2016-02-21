@@ -20,6 +20,7 @@ Global $hp
 Global $currenthp
 Global $ProcessInformation
 Global $HPKey = "{F9}"
+$bla = 1
 
 $exit = False
 $pause = True
@@ -65,6 +66,8 @@ Func Terminate()
 	$exit = True
 EndFunc   ;==>Terminate
 
+Local $hDLL = DllOpen("user32.dll")
+
 
 While Not $exit
 	If Not $pause Then
@@ -75,7 +78,18 @@ While Not $exit
 			If ($procent) < 0.99 And $currenthp > 1 Then
 				ControlSend($WindId, "", "", $HPKey)
 			EndIf
-			Sleep(50)
+
+			if _IsPressed (20,$hDLL) Then
+				Send("{F10}")
+				Sleep(5)
+				$aPos = MouseGetPos()
+				MouseClick("left", $aPos[0], $aPos[1]+$bla)
+				$bla=$bla*(-1)
+				Send("{F10}")
+				Sleep(5)
+			Else
+				Sleep(50)
+			EndIf
 		EndIf
 	EndIf
 WEnd
