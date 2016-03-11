@@ -20,7 +20,7 @@ Global $hp
 Global $currenthp
 Global $ProcessInformation
 Global $HPKey = "{F9}"
-$bla = 1
+$bla = 0
 
 $exit = False
 $pause = True
@@ -80,13 +80,25 @@ While Not $exit
 			EndIf
 
 			if _IsPressed (20,$hDLL) Then
-				Send("{F10}")
-				Sleep(5)
-				$aPos = MouseGetPos()
-				MouseClick("left", $aPos[0], $aPos[1]+$bla)
-				$bla=$bla*(-1)
-				Send("{F10}")
-				Sleep(5)
+				if $bla = 0 then
+					Send("e")
+					Sleep(20)
+					Send("w")
+					Sleep(200)
+					$bla=1
+				ElseIf $bla = 1 Then
+					Send("r")
+					Sleep(20)
+					Send("w")
+					Sleep(200)
+					$bla=2
+				ElseIf $bla = 2 Then
+					Send("t")
+					Sleep(20)
+					Send("w")
+					Sleep(200)
+					$bla=0
+				EndIf
 			Else
 				Sleep(50)
 			EndIf

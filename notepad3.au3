@@ -10,13 +10,9 @@
 
 ; Script Start - Add your code below here
 #include <Misc.au3>
-HotKeySet("{F1}", "Terminate")
-HotKeySet("{F4}", "Pause")
+HotKeySet("{F2}", "Terminate")
+HotKeySet("{F3}", "Pause")
 
-
-Func Pause()
-   $pause = Not $pause
-EndFunc
 
 
 Func Terminate()
@@ -27,6 +23,10 @@ EndFunc
 $exit = False
 $pause = True
 $bla = 1
+
+Func Pause()
+   $pause = Not $pause
+EndFunc
 
 Local $hDLL = DllOpen("user32.dll")
 

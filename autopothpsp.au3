@@ -83,9 +83,9 @@ While Not $exit
 
 			Local $procenthp = $currenthp / $hp
 			Local $procentsp = $currentsp / $sp
-			If ($procenthp) < 0.99 And $currenthp > 1 Then
+			If ($procenthp) < 0.95 And $currenthp > 1 Then
 				ControlSend($WindId, "", "", $HPKey)
-			ElseIf ($procentsp) < 0.99 And $currentsp > 1 Then
+			ElseIf ($procentsp) < 0.95 Then
 				ControlSend($WindId, "", "", $SPKey)
 			EndIf
 			Sleep(50)

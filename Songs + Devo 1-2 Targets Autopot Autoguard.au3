@@ -15,8 +15,10 @@ HotKeySet("{F4}", "Pause")
 ;One button sets
 HotKeySet("{F5}", "Set1")
 HotKeySet("{F6}", "Set2")
+
+;Devo Target 1
 HotKeySet("{F7}", "Set3")
-;One button + click set
+;Devo Target 2
 HotKeySet("{F8}", "Set4")
 
 ;Desets
@@ -28,9 +30,12 @@ HotKeySet("^{F8}", "DeSet4")
 ;Keys to press ; qe = use e only when q goesnt work (ex. use bragi than encore only); qq = to reduce input problems and moving wizzards^^
 Global $Key1 = "qe"
 Global $Key2 = "qe"
-Global $Key3 = "qe"
-Global $Key4 = "q"
-Global $Key5 = "e"
+Global $KeyAutoguard = "b"
+Global $KeyDevo = "{F10}"
+Global $HPKey = "{F9}"
+
+Global $DevoTarget1
+Global $DevoTarget2
 
 ;Bools if set or not
 Global $b1set = False
@@ -39,10 +44,10 @@ Global $b3set = False
 Global $b4set = False
 
 ;Spam cooldowns in ms
-Global $i1cd = 4000
+Global $i1cd = 10000
 Global $i2cd = 10000
-Global $i3cd = 10000
-Global $i4cd = 50
+Global $i3cd = 300000
+Global $i4cd = 80000
 
 Global $switchcast = false
 
@@ -98,6 +103,7 @@ EndFunc
 
 Func Set3()
          $WinID3=WinGetHandle("")
+		 $DevoTarget1 = MouseGetPos()
 		 Global $b3set = True
 		 UpdateText()
 EndFunc
@@ -109,7 +115,7 @@ EndFunc
 
 Func Set4()
          $WinID4=WinGetHandle("")
-		 Global $mousePosition = MouseGetPos()
+		 $DevoTarget2 = MouseGetPos()
 		 Global $b4set = True
 		 UpdateText()
 EndFunc
@@ -161,7 +167,7 @@ While Not $exit
 
 		If $b4Set Then
 			$now = TimerInit()
-			$timediff = TimerDiff($lastused4)
+			$timediff = TimerDiff($lastused3)
 			If $timediff > $i4cd Then
 					ControlSend($WinID4, "", "", $Key4)
 					Sleep($pausezwischenskillundclick)
