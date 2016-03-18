@@ -20,6 +20,7 @@ Global $hp
 Global $currenthp
 Global $ProcessInformation
 Global $HPKey = "{F9}"
+$bla = 1
 
 $exit = False
 $pause = True
@@ -27,6 +28,8 @@ $pause = True
 Global $pause = True
 Opt("PixelCoordMode", 0) ;1=absolute, 0=relative, 2=client
 Opt("MouseCoordMode", 0) ;1=absolute, 0=relative, 2=client
+Opt("MouseClickDelay", 0)
+Opt("SendKeyDelay", 0)
 
 Global $hwnd
 $hwnd = GUICreate("Text Region", @DesktopWidth, @DesktopHeight, 10, 10, $WS_POPUP, BitOR($WS_EX_TOPMOST, $WS_EX_TOOLWINDOW))
@@ -65,6 +68,8 @@ Func Terminate()
 	$exit = True
 EndFunc   ;==>Terminate
 
+Local $hDLL = DllOpen("user32.dll")
+
 
 While Not $exit
 	If Not $pause Then
@@ -72,10 +77,22 @@ While Not $exit
 			$hp = _MemoryRead(0xCA2118, $ProcessInformation)
 			$currenthp = _MemoryRead(0xCA2114, $ProcessInformation)
 			Local $procent = $currenthp / $hp
-			If ($procent) < 0.99 And $currenthp > 1 Then
+			If ($procent) < 0.95 And $currenthp > 1 Then
 				ControlSend($WindId, "", "", $HPKey)
 			EndIf
-			Sleep(50)
+
+			if _IsPressed (20,$hDLL) Then
+				Send("s")
+				Sleep(5)
+				$aPos = MouseGetPos()
+				MouseClick("left", $aPos[0], $aPos[1]+$bla)
+				Sleep(200)
+				$bla=$bla*(-1)
+				Send("1")
+				Sleep(250)
+			Else
+				Sleep(50)
+			EndIf
 		EndIf
 	EndIf
 WEnd

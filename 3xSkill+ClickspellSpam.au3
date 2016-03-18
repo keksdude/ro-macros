@@ -39,7 +39,7 @@ Global $b3set = False
 Global $b4set = False
 
 ;Spam cooldowns in ms
-Global $i1cd = 4000
+Global $i1cd = 5000
 Global $i2cd = 10000
 Global $i3cd = 10000
 Global $i4cd = 50

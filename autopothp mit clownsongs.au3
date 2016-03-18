@@ -79,24 +79,26 @@ While Not $exit
 				ControlSend($WindId, "", "", $HPKey)
 			EndIf
 
+			$pauseweapon = 50
+			$pausesong = 250
 			if _IsPressed (20,$hDLL) Then
 				if $bla = 0 then
-					Send("e")
-					Sleep(20)
+					Send("z")
+					Sleep($pauseweapon)
 					Send("w")
-					Sleep(200)
+					Sleep($pausesong)
 					$bla=1
 				ElseIf $bla = 1 Then
-					Send("r")
-					Sleep(20)
+					Send("z")
+					Sleep($pauseweapon)
 					Send("w")
-					Sleep(200)
+					Sleep($pausesong)
 					$bla=2
 				ElseIf $bla = 2 Then
-					Send("t")
-					Sleep(20)
+					Send("z")
+					Sleep($pauseweapon)
 					Send("w")
-					Sleep(200)
+					Sleep($pausesong)
 					$bla=0
 				EndIf
 			Else
