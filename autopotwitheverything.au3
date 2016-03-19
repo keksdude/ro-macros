@@ -13,6 +13,7 @@
 #include <GUIConstantsEx.au3>
 #include <GuiEdit.au3>
 #include <ScrollBarsConstants.au3>
+#include <Math.au3>
 
 Local $hDLL = DllOpen("user32.dll")
 
@@ -43,10 +44,15 @@ Global $b_do_consufion = Int(IniRead ( "config.ini", "autopot", "confusion", "-1
 Global $b_do_skill = Int(IniRead ( "config.ini", "autopot", "skillspam", "-1" ))
 Global $key_skill = IniRead ( "config.ini", "keys", "skillonspacekey", "0" )
 
+Global $dex_ignorect = Int(IniRead ( "config.ini", "times", "dexignorect", "0" ))
 Global $ms_skilldelay = Int(IniRead ( "config.ini", "times", "skilldelay", "-1" ))
-Global $ms_pingtollerance = Int(IniRead ( "config.ini", "times", "pingtollerance", "-1" ))
+Global $skilldelayA = Int(IniRead ( "config.ini", "times", "skilldelayA", "-1" ))
+Global $skilldelayB = Int(IniRead ( "config.ini", "times", "skilldelayB", "-1" ))
+Global $skilldelayMode = Int(IniRead ( "config.ini", "times", "skilldelayMode", "-1" ))
+Global $ms_skillcasttime = Int(IniRead ( "config.ini", "times", "skillcasttime", "-1" ))
+Global $ms_pingtolerance = Int(IniRead ( "config.ini", "times", "pingtolerance", "-1" ))
 Global $ms_potdelay = Int(IniRead ( "config.ini", "times", "potdelay", "-1" ))
-
+Global $skilldelay = 0
 ;Variables to calc time differences
 Global $lastusedskill
 Global $lastusedpot
@@ -93,14 +99,33 @@ _GUICtrlEdit_SetSel($editbox, $iEnd, $iEnd)
 _GUICtrlEdit_Scroll($editbox, $SB_SCROLLCARET)
 GUICtrlSetData($editbox, $text, 1)
 
+Func casttime_factor()
+		If (( _MemoryRead(0xC9FCB4, $ProcessInformation) + _MemoryRead(0xC9FC9C, $ProcessInformation)) > 149 And $dex_ignorect = 1) Then ;ignore cast time if dex is more than 149 and the feature is enabled
+			Return 0
+		Else
+			Return 1
+		EndIf
+EndFunc
+
 Func Morecd()
-	$ms_skilldelay = $ms_skilldelay + 10
-	AddText("next skilldelay " & Int($ms_skilldelay))
+	$ms_pingtolerance = $ms_pingtolerance + 5
+	If $skilldelayMode = 1 Then
+		$Amotion = _MemoryRead(0xC9FCD4, $ProcessInformation)
+		AddText("Total:"& Int($ms_skillcasttime*casttime_factor()+$Amotion*$skilldelayA+$skilldelayB+$ms_pingtolerance) &" current casttime: " & Int($ms_skillcasttime) & "current skilldelay " & Int(_Max(Int($Amotion*$skilldelayA+$skilldelayB),200)) & " +current tolerance: " & Int($ms_pingtolerance))
+	Else
+		AddText("Total:" & Int($ms_skilldelay+$ms_pingtolerance) & " current skilldelay: " & Int($ms_skilldelay) & " +current tolerance: " & Int($ms_pingtolerance)  )
+	EndIf
+
 EndFunc
 
 Func Lesscd()
-	$ms_skilldelay = $ms_skilldelay - 10
-	AddText("next skilldelay " & Int($ms_skilldelay))
+	$ms_pingtolerance = $ms_pingtolerance - 5
+	If $skilldelayMode = 1 Then
+		$Amotion = _MemoryRead(0xC9FCD4, $ProcessInformation)
+		AddText("Total:"& Int($ms_skillcasttime*casttime_factor()+$Amotion*$skilldelayA+$skilldelayB+$ms_pingtolerance) &" current casttime: " & Int($ms_skillcasttime) & "current skilldelay " & Int(_Max(Int($Amotion*$skilldelayA+$skilldelayB),200)) & " +current tolerance: " & Int($ms_pingtolerance))
+	Else
+		AddText("Total:" & Int($ms_skilldelay+$ms_pingtolerance) & " current skilldelay: " & Int($ms_skilldelay) & " +current tolerance: " & Int($ms_pingtolerance)  )
+	EndIf
 EndFunc
 
 Func Init()
@@ -257,17 +282,30 @@ While Not $exit
 			$now = TimerInit()
 			$timediff = TimerDiff($lastusedskill)
 
-			if $b_do_skill = 2 And _IsPressed (20,$hDLL) And $timediff > ($ms_skilldelay + $ms_pingtollerance) Then
+			if $b_do_skill = 2 And _IsPressed (20,$hDLL) And $timediff > ($skilldelay) Then
+				$lastusedskill = TimerInit()
 				Send($key_skill)
 				Sleep(5)
 				$aPos = MouseGetPos()
 				MouseClick("left", $aPos[0], $aPos[1]+$bla)
 				$bla=$bla*(-1)
-				$lastusedskill = TimerInit()
+				If $skilldelayMode = 1 Then
+					$Amotion = _MemoryRead(0xC9FCD4, $ProcessInformation)
+					$skilldelay = $ms_skillcasttime*casttime_factor()+ _Max($Amotion*$skilldelayA+$skilldelayB,200)+$ms_pingtolerance
+				Else
+					$skilldelay = $ms_skilldelay+$ms_pingtolerance
+				EndIf
+
 				AddText("used skill ms " & Int($timediff))
-			ElseIf $b_do_skill = 1 And _IsPressed (20,$hDLL) And $timediff > ($ms_skilldelay + $ms_pingtollerance)  Then
-				Send($key_skill)
+			ElseIf $b_do_skill = 1 And _IsPressed (20,$hDLL) And $timediff > ($skilldelay)  Then
 				$lastusedskill = TimerInit()
+				Send($key_skill)
+				If $skilldelayMode = 1 Then
+					$Amotion = _MemoryRead(0xC9FCD4, $ProcessInformation)
+					$skilldelay = $ms_skillcasttime*casttime_factor()+ _Max($Amotion*$skilldelayA+$skilldelayB,200)+$ms_pingtolerance
+				Else
+					$skilldelay = $ms_skilldelay+$ms_pingtolerance
+				EndIf
 				AddText("used skill ms " & Int($timediff))
 			EndIf
 
@@ -275,16 +313,16 @@ While Not $exit
 			$timediff = TimerDiff($lastusedpot)
 			If $timediff > $ms_potdelay Then
 				If $do_hppot Then
-					ControlSend($WindId, "", "", $key_hp)
 					$lastusedpot = TimerInit()
+					ControlSend($WindId, "", "", $key_hp)
 					AddText("used hppot ms " & $timediff)
 				ElseIf $do_panacea Then
-					ControlSend($WindId, "", "", $key_panacea)
 					$lastusedpot = TimerInit()
+					ControlSend($WindId, "", "", $key_panacea)
 					AddText("used panacea ms " & $timediff)
 				ElseIf $do_sppot Then
-					ControlSend($WindId, "", "", $key_sp)
 					$lastusedpot = TimerInit()
+					ControlSend($WindId, "", "", $key_sp)
 					AddText("used sppot ms " & $timediff)
 				EndIf
 			EndIf
