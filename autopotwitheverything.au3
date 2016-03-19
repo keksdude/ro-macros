@@ -43,6 +43,7 @@ Global $b_do_consufion = Int(IniRead ( "config.ini", "autopot", "confusion", "-1
 
 Global $b_do_skill = Int(IniRead ( "config.ini", "autopot", "skillspam", "-1" ))
 Global $key_skill = IniRead ( "config.ini", "keys", "skillonspacekey", "0" )
+Global $key_skill2 = IniRead ( "config.ini", "keys", "skillonspacekey2", "0" )
 
 Global $dex_ignorect = Int(IniRead ( "config.ini", "times", "dexignorect", "0" ))
 Global $ms_skilldelay = Int(IniRead ( "config.ini", "times", "skilldelay", "-1" ))
@@ -71,6 +72,7 @@ Global $int_confusion_id = 886
 Global $int_silcence_id = 885
 
 Global $bla = 1
+Global $b_first_or_secondskill = false
 
 $exit = False
 $pause = True
@@ -221,6 +223,7 @@ Func Terminate()
 EndFunc   ;==>Terminate
 
 
+
 While Not $exit
 	If Not $pause And $WindId <> 0 And Not _IsPressed ("A0",$hDLL) And Not _IsPressed ("A1",$hDLL) And Not _IsPressed ("A2",$hDLL) And Not _IsPressed ("A3",$hDLL) And Not _IsPressed ("A4",$hDLL) And Not _IsPressed ("A5",$hDLL)  Then
 
@@ -306,6 +309,23 @@ While Not $exit
 				Else
 					$skilldelay = $ms_skilldelay+$ms_pingtolerance
 				EndIf
+				AddText("used skill ms " & Int($timediff))
+			ElseIf $b_do_skill = 3 And _IsPressed (20,$hDLL) And $timediff > ($skilldelay)  Then
+				$lastusedskill = TimerInit()
+				if($b_first_or_secondskill) Then
+					Send($key_skill)
+					Sleep(5)
+					$aPos = MouseGetPos()
+					MouseClick("left", $aPos[0], $aPos[1]+$bla)
+					$bla=$bla*(-1)
+					$skilldelay = $ms_skilldelay+$ms_pingtolerance
+				Else
+					Send($key_skill2)
+					$Amotion = _MemoryRead(0xC9FCD4, $ProcessInformation)
+					$skilldelay = $ms_skillcasttime*casttime_factor()+ _Max($Amotion*$skilldelayA+$skilldelayB,200)+$ms_pingtolerance
+				EndIf
+				$b_first_or_secondskill = Not $b_first_or_secondskill
+
 				AddText("used skill ms " & Int($timediff))
 			EndIf
 
