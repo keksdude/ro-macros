@@ -20,7 +20,7 @@ HotkeySet("{F3}", "SearchTarget")
 
 
 Global $WindId = 0
-Global $cHex = 0x948CA5
+Global $cHex = 0x00FF00
 Global $ResX = 1680
 Global $ResY = 1050
 Global $wingPos = [0,0]
@@ -59,21 +59,21 @@ EndFunc
 
 While Not $exit
 	While Not $pause
-		$i=1
+		$i=400 ;put chat on left side
 		$t=0
 		$cancel = False
-		While $i < ($ResX-80) And Not $cancel
-			$tempPos = PixelSearch($i,1,$ResX,$ResY,$cHex)
-			If Not @error Then
-				Sleep(2)
-				$mPos[$t][0] = $tempPos[0]
-				$mPos[$t][1] = $tempPos[1]
-				$i = $tempPos[0]+40
-				$t=$t+1
-			Else
-				$cancel = True
-			EndIf
-		Wend
+		$foundsomething = True
+		While $foundsomething
+
+			Local $tempPos
+			While $i < ($ResX-80) And Not $cancel
+				$tempPos = PixelSearch($i,1,$ResX,$ResY,$cHex)
+				If Not @error Then
+					Sleep(2)
+				Else
+					$cancel = True
+				EndIf
+			Wend
 
 		$i = 0
 		While $i < $t

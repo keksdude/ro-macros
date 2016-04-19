@@ -29,7 +29,7 @@ HotKeySet("^{F8}", "DeSet4")
 Global $Key1 = "qe"
 Global $Key2 = "qe"
 Global $Key3 = "qe"
-Global $Key4 = "q"
+Global $Key4 = "1"
 Global $Key5 = "e"
 
 ;Bools if set or not
@@ -40,8 +40,8 @@ Global $b4set = False
 
 ;Spam cooldowns in ms
 Global $i1cd = 5000
-Global $i2cd = 10000
-Global $i3cd = 10000
+Global $i2cd = 5000
+Global $i3cd = 5000
 Global $i4cd = 50
 
 Global $switchcast = false

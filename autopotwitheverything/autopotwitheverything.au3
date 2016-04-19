@@ -32,9 +32,6 @@ HotKeySet("{PGDN}", "Lesscd")
 Global $b_do_hp = Int(IniRead ( "config.ini", "autopot", "hp", "-1" ))
 Global $key_hp = IniRead ( "config.ini", "keys", "hpkey", "0" )
 Global $i_hp_percent = Int(IniRead ( "config.ini", "autopot", "hppercent", "0" ))
-Global $b_use_ygg = Int(IniRead ( "config.ini", "autopot", "useygg", "-1" ))
-Global $i_ygg_percent = Int(IniRead ( "config.ini", "autopot", "yggpercent", "0" ))
-Global $key_ygg = IniRead ( "config.ini", "keys", "yggberry", "0" )
 
 Global $b_do_sp = Int(IniRead ( "config.ini", "autopot", "sp", "-1" ))
 Global $key_sp = IniRead ( "config.ini", "keys", "spkey", "0" )
@@ -103,7 +100,6 @@ $iEnd = StringLen(GUICtrlRead($editbox))
 _GUICtrlEdit_SetSel($editbox, $iEnd, $iEnd)
 _GUICtrlEdit_Scroll($editbox, $SB_SCROLLCARET)
 GUICtrlSetData($editbox, $text, 1)
-
 
 Func casttime_factor()
 		If (( _MemoryRead(0xC9FCB4, $ProcessInformation) + _MemoryRead(0xC9FC9C, $ProcessInformation)) > 149 And $dex_ignorect = 1) Then ;ignore cast time if dex is more than 149 and the feature is enabled
@@ -230,13 +226,13 @@ EndFunc   ;==>Terminate
 
 While Not $exit
 	If Not $pause And $WindId <> 0 And Not _IsPressed ("A0",$hDLL) And Not _IsPressed ("A1",$hDLL) And Not _IsPressed ("A2",$hDLL) And Not _IsPressed ("A3",$hDLL) And Not _IsPressed ("A4",$hDLL) And Not _IsPressed ("A5",$hDLL)  Then
-		$dowhile = true
-		$text = ""
-		$currentram = $buffstart
-		$do_panacea = False
-		$do_hppot = False
-		$do_sppot = false
-		$do_ygg = false
+
+			$dowhile = true
+			$text = ""
+			$currentram = $buffstart
+			$do_panacea = False
+			$do_hppot = False
+			$do_sppot = false
 
 			If $b_do_silence = 1 Or $b_do_consufion = 1 Then
 				While $dowhile
@@ -269,9 +265,6 @@ While Not $exit
 				If ($procenthp) < ($i_hp_percent/100) And $hp > 0 Then
 					$do_hppot = true
 				EndIf
-				If $b_use_ygg = 1 And ($procenthp) < ($i_ygg_percent/100) Then
-					$do_ygg = true
-				EndIf
 			EndIf
 
 			If $b_do_sp = 1 Then
@@ -287,7 +280,7 @@ While Not $exit
 
 			;$rgn = CreateTextRgn($hwnd, $text, 20, "Arial", 500)
 			;SetWindowRgn($hwnd, $rgn)
-		;GUISetState()
+			;GUISetState()
 
 			$now = TimerInit()
 			$timediff = TimerDiff($lastusedskill)
@@ -325,9 +318,6 @@ While Not $exit
 					$aPos = MouseGetPos()
 					MouseClick("left", $aPos[0], $aPos[1]+$bla)
 					$bla=$bla*(-1)
-					Sleep(5)
-					Send($key_skill)
-
 					$skilldelay = $ms_skilldelay+$ms_pingtolerance
 				Else
 					Send($key_skill2)
@@ -342,29 +332,22 @@ While Not $exit
 			$now = TimerInit()
 			$timediff = TimerDiff($lastusedpot)
 			If $timediff > $ms_potdelay Then
-				If false Then
-					$lastusedpot = TimerInit()
-					ControlSend($WindId, "", "", $key_ygg)
-					AddText("used ygg ms " & Int($timediff))
-				EndIf
 				If $do_hppot Then
 					$lastusedpot = TimerInit()
 					ControlSend($WindId, "", "", $key_hp)
-					AddText("used hppot ms " & Int($timediff))
+					AddText("used hppot ms " & $timediff)
 				ElseIf $do_panacea Then
 					$lastusedpot = TimerInit()
 					ControlSend($WindId, "", "", $key_panacea)
-					AddText("used panacea ms " & Int($timediff))
+					AddText("used panacea ms " & $timediff)
 				ElseIf $do_sppot Then
 					$lastusedpot = TimerInit()
 					ControlSend($WindId, "", "", $key_sp)
-					AddText("used sppot ms " & Int($timediff))
+					AddText("used sppot ms " & $timediff)
 				EndIf
 			EndIf
-		Sleep(50)
-		EndIf
+	EndIf
 WEnd
-
 If $ProcessInformation <> 0 Then
 	_MemoryClose($ProcessInformation)
 EndIf
