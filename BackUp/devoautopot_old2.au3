@@ -89,10 +89,10 @@ EndFunc   ;==>Terminate
 
 While Not $exit
 	If Not $pause Then
-		ControlSend($WindId, "", "", "{ENTER}")
-		Sleep(250)
+			ControlSend($WindId, "", "", "{ENTER}")
+			Sleep(250)
+		EndIf
 	EndIf
-EndIf
 WEnd
 
 

@@ -259,8 +259,8 @@ While Not $exit
 			EndIf
 
 			If $b_do_hp = 1 Then
-				$max_hp = _MemoryRead(0xCA2118, $ProcessInformation)
-				$hp = _MemoryRead(0xCA2114, $ProcessInformation)
+				$max_hp = _MemoryRead(0x9A108C, $ProcessInformation)
+				$hp = _MemoryRead(0x9A1088, $ProcessInformation)
 				Local $procenthp = $hp / $max_hp
 				If ($procenthp) < ($i_hp_percent/100) And $hp > 0 Then
 					$do_hppot = true
@@ -268,9 +268,9 @@ While Not $exit
 			EndIf
 
 			If $b_do_sp = 1 Then
-				$hp = _MemoryRead(0xCA2114, $ProcessInformation)
-				$max_sp = _MemoryRead(0xCA2120, $ProcessInformation)
-				$sp = _MemoryRead(0xCA211C, $ProcessInformation)
+				$hp = _MemoryRead(0x9A1088, $ProcessInformation)
+				$max_sp = _MemoryRead(0x9A1094, $ProcessInformation)
+				$sp = _MemoryRead(0x9A1090, $ProcessInformation)
 				Local $procentsp = $sp / $max_sp
 				If ($procentsp) < ($i_sp_percent/100)  And $hp > 0 Then
 					$do_sppot = True

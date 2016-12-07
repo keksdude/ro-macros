@@ -26,10 +26,10 @@ HotKeySet("^{F7}", "DeSet3")
 HotKeySet("^{F8}", "DeSet4")
 
 ;Keys to press ; qe = use e only when q goesnt work (ex. use bragi than encore only); qq = to reduce input problems and moving wizzards^^
-Global $Key1 = "qe"
-Global $Key2 = "qe"
-Global $Key3 = "qe"
-Global $Key4 = "1"
+Global $Key1 = ",."
+Global $Key2 = ",."
+Global $Key3 = ",."
+Global $Key4 = "e"
 Global $Key5 = "e"
 
 ;Bools if set or not
@@ -129,15 +129,15 @@ Func Terminate()
    $exit = True
 EndFunc
 
-
+Local $hDLL = DllOpen("user32.dll")
 While Not $exit
-   if Not $pause Then
+   if Not $pause  And Not _IsPressed ("A0",$hDLL) And Not _IsPressed ("A1",$hDLL) And Not _IsPressed ("A2",$hDLL) And Not _IsPressed ("A3",$hDLL) And Not _IsPressed ("A4",$hDLL) And Not _IsPressed ("A5",$hDLL) Then
 		If $b1Set Then
 			$now = TimerInit()
 			$timediff = TimerDiff($lastused1)
 			If $timediff > $i1cd Then
 				ControlSend($WinID1, "", "", $Key1)
-				$lastused1 = TimerInit();
+				$lastused1 = TimerInit()
 			EndIf
 		EndIf
 
@@ -146,7 +146,7 @@ While Not $exit
 			$timediff = TimerDiff($lastused2)
 			If $timediff > $i2cd Then
 				ControlSend($WinID2, "", "", $Key2)
-				$lastused2 = TimerInit();
+				$lastused2 = TimerInit()
 			EndIf
 		EndIf
 
@@ -155,7 +155,7 @@ While Not $exit
 			$timediff = TimerDiff($lastused3)
 			If $timediff > $i3cd Then
 				ControlSend($WinID3, "", "", $Key3)
-				$lastused3 = TimerInit();
+				$lastused3 = TimerInit()
 			EndIf
 		EndIf
 
@@ -166,7 +166,7 @@ While Not $exit
 					ControlSend($WinID4, "", "", $Key4)
 					Sleep($pausezwischenskillundclick)
 					MouseClick("left",$mousePosition[0],$mousePosition[1])
-					$lastused4 = TimerInit();
+					$lastused4 = TimerInit()
 			EndIf
 		EndIf
 		Sleep(50)

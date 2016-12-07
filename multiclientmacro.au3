@@ -157,10 +157,10 @@ Func InitClient($client_no)
 		$class[$client_no] = GetClass($processInformation[$client_no])
 		$blvl[$client_no] = _MemoryRead(0xC9FC6C, $processInformation[$client_no])
 		$jlvl[$client_no] = _MemoryRead(0xC9FC78, $processInformation[$client_no])
-		$hp[$client_no] = _MemoryRead(0xCA2114, $processInformation[$client_no])
-		$max_hp[$client_no] = _MemoryRead(0xCA2118, $processInformation[$client_no])
-		$sp[$client_no] = _MemoryRead(0xCA211C, $processInformation[$client_no])
-		$max_sp[$client_no] = _MemoryRead(0xCA2120, $processInformation[$client_no])
+		$hp[$client_no] = _MemoryRead(0x9A1088, $processInformation[$client_no])
+		$max_hp[$client_no] = _MemoryRead(0x9A108C, $processInformation[$client_no])
+		$sp[$client_no] = _MemoryRead(0x9A1090, $processInformation[$client_no])
+		$max_sp[$client_no] = _MemoryRead(0x9A1094, $processInformation[$client_no])
 	EndIf
 	UpdateTextBox()
 EndFunc
@@ -238,29 +238,29 @@ EndFunc
 Func SwitchSongs()
 	If Not $pause Then
 		$pause = true
-		For $client_no = 0 To 3 Step 1
-			If $set[$client_no] Then
-				ControlSend($windId[$client_no], "", "", $weaponkey[$client_no])
-			EndIf
-		Next
-		Sleep(50)
-		For $client_no = 0 To 3 Step 1
-			If $set[$client_no] Then
-				ControlSend($windId[$client_no], "", "", $song1key[$client_no])
-			EndIf
-		Next
-
-		Sleep(500)
 
 		For $client_no = 0 To 3 Step 1
 			If $set[$client_no] Then
+				Sleep(100)
 				ControlSend($windId[$client_no], "", "", $weaponkey[$client_no])
-			EndIf
-		Next
-		Sleep(50)
-		For $client_no = 0 To 3 Step 1
-			If $set[$client_no] Then
-				ControlSend($windId[$client_no], "", "", $song2key[$client_no])
+				Sleep(500)
+				ControlSend($windId[$client_no], "", "", "r")
+				Sleep(100)
+				ControlSend($windId[$client_no], "", "", $weaponkey[$client_no])
+				Sleep(500)
+				ControlSend($windId[$client_no], "", "", "t")
+				Sleep(100)
+				ControlSend($windId[$client_no], "", "", $weaponkey[$client_no])
+				Sleep(500)
+				ControlSend($windId[$client_no], "", "", "z")
+				Sleep(100)
+				ControlSend($windId[$client_no], "", "", $weaponkey[$client_no])
+				Sleep(500)
+				ControlSend($windId[$client_no], "", "", "u")
+				Sleep(100)
+				ControlSend($windId[$client_no], "", "", $weaponkey[$client_no])
+				Sleep(500)
+				ControlSend($windId[$client_no], "", "", "e")
 			EndIf
 		Next
 
